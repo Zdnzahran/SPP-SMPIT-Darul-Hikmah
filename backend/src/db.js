@@ -1,16 +1,19 @@
-import mysql from 'mysql2/promise';
-import { config } from './config.js';
+import mysql from "mysql2/promise";
+import { config } from "./config.js";
 
 export const pool = mysql.createPool({
   uri: config.databaseUrl,
-  dateStrings: true, // DATE/DATETIME dikembalikan sebagai teks 'YYYY-MM-DD', menghindari pergeseran zona waktu
+  ...(config.production
+    ? { ssl: { minVersion: "TLSv1.2", rejectUnauthorized: true } }
+    : {}),
+  dateStrings: true,
   decimalNumbers: true,
   connectionLimit: 10,
   waitForConnections: true,
 });
 
 // Waktu NOW() di database selalu WIB.
-pool.on('connection', (conn) => conn.query("SET time_zone = '+07:00'"));
+pool.on("connection", (conn) => conn.query("SET time_zone = '+07:00'"));
 
 /** Menjalankan beberapa query dalam satu transaksi: semua berhasil atau semua dibatalkan. */
 export async function withTx(fn) {
