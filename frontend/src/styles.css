@@ -1,0 +1,120 @@
+:root {
+  --h900: #0c3b2e; --h800: #11503f; --h700: #176650; --h600: #20805f; --h100: #e1eee8; --h50: #f1f7f4;
+  --emas: #b6862c; --emas-lembut: #f6ecd3; --emas-tua: #7a5a14;
+  --tinta: #16231e; --abu: #5d6d66; --garis: #e2e9e5; --latar: #f3f6f4;
+  --bs-primary: #176650; --bs-primary-rgb: 23, 102, 80;
+  --bs-link-color: #176650; --bs-link-hover-color: #0c3b2e;
+  --bs-body-font-family: 'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --bs-body-color: #16231e;
+}
+body { background: var(--latar); font-feature-settings: 'tnum' 1; }
+h1, h2, h3 { letter-spacing: -0.01em; }
+
+/* ---------- Kontrol ---------- */
+.btn { border-radius: 10px; font-weight: 600; }
+.btn-primary { --bs-btn-bg: var(--h700); --bs-btn-border-color: var(--h700); --bs-btn-hover-bg: var(--h800); --bs-btn-hover-border-color: var(--h800); --bs-btn-active-bg: var(--h900); --bs-btn-active-border-color: var(--h900); --bs-btn-disabled-bg: var(--h700); --bs-btn-disabled-border-color: var(--h700); }
+.btn-outline-primary { --bs-btn-color: var(--h700); --bs-btn-border-color: #b9d3c8; --bs-btn-hover-bg: var(--h700); --bs-btn-hover-border-color: var(--h700); --bs-btn-active-bg: var(--h800); }
+.btn-outline-secondary { --bs-btn-color: #44544d; --bs-btn-border-color: #cfdad4; --bs-btn-hover-bg: #e9efec; --bs-btn-hover-color: var(--tinta); --bs-btn-hover-border-color: #cfdad4; --bs-btn-active-bg: #dde6e1; --bs-btn-active-color: var(--tinta); }
+.btn-outline-danger { --bs-btn-border-color: #ecc4c0; }
+.form-control, .form-select { border-radius: 10px; border-color: #cfdad4; padding: .55rem .8rem; }
+.form-control:focus, .form-select:focus { border-color: #4f9a82; box-shadow: 0 0 0 .22rem rgba(23, 102, 80, .15); }
+.form-label { font-weight: 600; font-size: .875rem; color: #33443d; margin-bottom: .3rem; }
+.form-check-input:checked { background-color: var(--h700); border-color: var(--h700); }
+:focus-visible { outline: 3px solid #7cc4ad; outline-offset: 2px; }
+.alert { border-radius: 12px; border-width: 1px; }
+.modal-content { border: 0; border-radius: 18px; box-shadow: 0 24px 60px rgba(12, 59, 46, .25); }
+.modal-header, .modal-footer { border-color: var(--garis); }
+.badge { font-weight: 600; border-radius: 999px; padding: .4em .7em; }
+.badge.bg-success { background: var(--h100) !important; color: var(--h800) !important; }
+.badge.bg-secondary { background: #e6ebe8 !important; color: #55645d !important; }
+.badge.bg-info { background: var(--emas-lembut) !important; color: var(--emas-tua) !important; }
+.pagination { --bs-pagination-active-bg: var(--h700); --bs-pagination-active-border-color: var(--h700); --bs-pagination-color: var(--h700); }
+.list-group-item-action:hover { background: var(--h50); }
+
+/* ---------- Kartu & tabel ---------- */
+.kartu { background: #fff; border: 1px solid var(--garis); border-radius: 16px; box-shadow: 0 1px 2px rgba(12, 59, 46, .04); }
+.table { --bs-table-hover-bg: var(--h50); --bs-table-border-color: #eef2f0; }
+.table > :not(caption) > * > * { padding: .7rem .85rem; }
+.table thead th { font-size: .8rem; font-weight: 600; color: var(--abu); background: transparent; border-bottom: 1px solid var(--garis); white-space: nowrap; }
+.table-bordered thead th { background: #f7faf8; }
+.angka { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.angka-besar { font-size: 1.55rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+
+/* ---------- Kerangka aplikasi ---------- */
+.app { display: flex; min-height: 100vh; }
+.sisi-tetap { width: 268px; flex: 0 0 268px; position: sticky; top: 0; height: 100vh; }
+.sisi-isi {
+  height: 100%; display: flex; flex-direction: column; color: #fff; padding: 1.25rem 1rem;
+  background: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, .06) 1px, transparent 0) 0 0 / 18px 18px, linear-gradient(180deg, var(--h900), var(--h800));
+}
+.merek { display: flex; align-items: center; gap: .75rem; padding: .25rem .5rem 1.25rem; }
+.merek-nama { font-weight: 700; line-height: 1.15; }
+.merek-sekolah { font-size: .78rem; color: rgba(255, 255, 255, .65); }
+.logo { object-fit: contain; border-radius: 12px; background: rgba(255, 255, 255, .0); flex: none; }
+.menu { display: flex; flex-direction: column; gap: 2px; }
+.menu-item { display: flex; align-items: center; gap: .75rem; padding: .65rem .8rem; border-radius: 10px; color: rgba(255, 255, 255, .75); text-decoration: none; font-weight: 500; position: relative; }
+.menu-item:hover { background: rgba(255, 255, 255, .08); color: #fff; }
+.menu-item.aktif { background: rgba(255, 255, 255, .13); color: #fff; font-weight: 600; }
+.menu-item.aktif::before { content: ''; position: absolute; left: -1rem; top: 20%; bottom: 20%; width: 4px; border-radius: 0 4px 4px 0; background: #d9b45c; }
+.sisi-bawah { margin-top: auto; border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 1rem; }
+.pengguna { display: flex; align-items: center; gap: .65rem; margin-bottom: .75rem; padding: 0 .4rem; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: #d9b45c; color: var(--h900); display: grid; place-items: center; font-weight: 700; }
+.sisi-bawah .btn { --bs-btn-color: rgba(255, 255, 255, .85); --bs-btn-border-color: rgba(255, 255, 255, .25); --bs-btn-hover-bg: rgba(255, 255, 255, .12); --bs-btn-hover-color: #fff; --bs-btn-hover-border-color: rgba(255, 255, 255, .35); font-weight: 500; }
+.utama { flex: 1; min-width: 0; }
+.topbar { display: flex; align-items: center; gap: .7rem; padding: .7rem 1rem; background: var(--h900); color: #fff; position: sticky; top: 0; z-index: 20; }
+.topbar button { background: none; border: 0; color: #fff; padding: .2rem; display: grid; }
+.konten { max-width: 1180px; margin: 0 auto; padding: 1.75rem 1.5rem 3rem; }
+.offcanvas.sisi-offcanvas { width: 280px; border: 0; background: var(--h900); }
+
+.judul-halaman { font-size: 1.55rem; font-weight: 700; margin: 0; }
+.sub-halaman { color: var(--abu); margin: .15rem 0 0; font-size: .92rem; }
+
+/* ---------- Foto latar (aman jika file foto tidak ada) ---------- */
+.foto-latar {
+  background-color: var(--h900);
+  background-image:
+    linear-gradient(165deg, rgba(8, 48, 37, .30) 0%, rgba(8, 48, 37, .88) 100%),
+    var(--foto, none),
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, .07) 1px, transparent 0),
+    linear-gradient(135deg, var(--h700), var(--h900));
+  background-size: cover, cover, 18px 18px, cover;
+  background-position: center;
+  color: #fff;
+}
+
+/* ---------- Login ---------- */
+.login { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); min-height: 100vh; background: #fff; }
+.login-foto { padding: 2.5rem; display: flex; flex-direction: column; justify-content: space-between; }
+.login-foto h2 { font-size: 2rem; font-weight: 700; max-width: 18ch; line-height: 1.2; }
+.login-form-sisi { display: grid; place-items: center; padding: 2rem 1.25rem; }
+.login-form { width: 100%; max-width: 380px; }
+@media (max-width: 991.98px) { .login { grid-template-columns: 1fr; } .login-foto { display: none; } }
+
+/* ---------- Dasbor ---------- */
+.hero { border-radius: 20px; padding: 1.75rem; margin-bottom: 1.25rem; min-height: 210px; display: flex; flex-direction: column; justify-content: space-between; gap: 1.25rem; }
+.hero .tanggal { font-size: .85rem; color: rgba(255, 255, 255, .78); }
+.hero h1 { font-size: 1.6rem; font-weight: 700; margin: .15rem 0 0; }
+.hero .total-label { font-size: .85rem; color: rgba(255, 255, 255, .78); }
+.hero .total { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.hero .btn-light { color: var(--h800); }
+.hero .btn-outline-light { border-color: rgba(255, 255, 255, .45); }
+.stat { padding: 1.1rem 1.2rem; display: flex; align-items: center; gap: .9rem; height: 100%; }
+.stat-ikon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--h100); color: var(--h700); flex: none; }
+.stat-ikon.emas { background: var(--emas-lembut); color: var(--emas-tua); }
+.stat .label { color: var(--abu); font-size: .82rem; }
+.stat .nilai { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.judul-kartu { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+
+/* ---------- Cetak ---------- */
+.cetak-kepala { text-align: center; margin-bottom: 1.1rem; padding-bottom: .9rem; border-bottom: 2px solid var(--tinta); }
+@media print {
+  body { background: #fff; }
+  .app { display: block; }
+  .konten { max-width: none; padding: 0; }
+  .kartu { border: none; box-shadow: none; padding: 0 !important; }
+  .table { font-size: 10.5pt; }
+}
+
+/* Pilihan jenis SPP pada form siswa */
+.jenis-blok { border: 1px solid var(--garis); border-radius: 12px; padding: .75rem .9rem; margin-bottom: .6rem; }
+.jenis-blok.aktif { border-color: #9cc9ba; background: var(--h50); }
