@@ -1,0 +1,12 @@
+{
+  "name": "spp-darul-hikmah",
+  "private": true,
+  "description": "Pembungkus untuk deploy satu service (Railway, Render, dll): build frontend lalu jalankan backend yang ikut menyajikannya.",
+  "scripts": {
+    "build": "npm --prefix frontend install --include=dev && npm --prefix frontend run build && npm --prefix backend install",
+    "start": "npm --prefix backend start"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

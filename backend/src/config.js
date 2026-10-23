@@ -11,6 +11,8 @@ export const config = {
   port: Number(process.env.PORT || 4000),
   production: process.env.NODE_ENV === "production",
   databaseUrl: process.env.DATABASE_URL,
+  // TiDB Cloud dan database online lain mewajibkan koneksi TLS. Isi DB_SSL=true untuk mengaktifkannya.
+  dbSsl: process.env.DB_SSL === "true",
   rahasia: process.env.SESSION_SECRET,
   cookieSecure: process.env.COOKIE_SECURE
     ? process.env.COOKIE_SECURE === "true"

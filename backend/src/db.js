@@ -3,11 +3,11 @@ import { config } from "./config.js";
 
 export const pool = mysql.createPool({
   uri: config.databaseUrl,
-  ...(config.production
-    ? { ssl: { minVersion: "TLSv1.2", rejectUnauthorized: true } }
-    : {}),
-  dateStrings: true,
+  dateStrings: true, // DATE/DATETIME dikembalikan sebagai teks 'YYYY-MM-DD', menghindari pergeseran zona waktu
   decimalNumbers: true,
+  ssl: config.dbSsl
+    ? { minVersion: "TLSv1.2", rejectUnauthorized: true }
+    : undefined,
   connectionLimit: 10,
   waitForConnections: true,
 });
