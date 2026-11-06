@@ -1,13 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { hitungBulanan, hitungPengembangan, hitungTahunan } from "./hitung.js";
+import { hitungBulanan, hitungPengembangan, hitungTahunan } from "../hitung.js";
 import {
   tambahBulan,
   daftarBulan,
   tanggalValid,
   awalTahunAjaran,
   daftarTahunAjaran,
-} from "./tanggal.js";
+} from "../tanggal.js";
 
 const bln = (...b) => b.map((bulan) => ({ bulan, nominal: 100000 }));
 

@@ -143,7 +143,7 @@ function FormSiswa({ siswa, onSelesai, onHide }) {
         <PesanError error={simpan.error} />
         {siap && !kelasKosong && (
           <>
-            <Form.Group className="mb-3">
+            <Form.Group controlId="siswa-nama" className="mb-3">
               <Form.Label>Nama siswa</Form.Label>
               <Form.Control
                 value={f.nama}
@@ -152,7 +152,7 @@ function FormSiswa({ siswa, onSelesai, onHide }) {
                 autoFocus
               />
             </Form.Group>
-            <Form.Group className="mb-3">
+            <Form.Group controlId="siswa-kelas" className="mb-3">
               <Form.Label>Kelas</Form.Label>
               <Form.Select
                 value={f.kelas_id}

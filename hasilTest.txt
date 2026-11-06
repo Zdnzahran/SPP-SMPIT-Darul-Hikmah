@@ -1,0 +1,72 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: login.spec.js >> Alur Autentikasi Bendahara (E2E) >> Bendahara berhasil masuk dengan kredensial yang tepat
+- Location: tests\login.spec.js:12:3
+
+# Error details
+
+```
+Error: expect(page).toHaveURL(expected) failed
+
+Expected pattern: /\/$/
+Received string:  "http://localhost:5173/login"
+Timeout: 5000ms
+
+Call log:
+  - Expect "toHaveURL" with timeout 5000ms
+    14 × locator resolved to <html lang="id">…</html>
+       - unexpected value "http://localhost:5173/login"
+
+```
+
+```yaml
+- heading "Masuk" [level=1]
+- paragraph: Kelola SPP SMPIT Darul Hikmah.
+- alert: Terjadi kesalahan pada server.
+- text: Username
+- textbox: bendahara_test
+- text: Password
+- textbox: password_test_bendahara
+- button "Tampilkan password"
+- button "Masuk"
+```
+
+# Test source
+
+```ts
+  1  | import { test, expect } from "@playwright/test";
+  2  | 
+  3  | test.describe("Alur Autentikasi Bendahara (E2E)", () => {
+  4  |   test("Pengguna tidak dikenal diarahkan kembali ke halaman login saat akses dashboard", async ({
+  5  |     page,
+  6  |   }) => {
+  7  |     await page.goto("/siswa");
+  8  | 
+  9  |     await expect(page).toHaveURL(/\/login$/);
+  10 |   });
+  11 | 
+  12 |   test("Bendahara berhasil masuk dengan kredensial yang tepat", async ({
+  13 |     page,
+  14 |   }) => {
+  15 |     await page.goto("/login");
+  16 | 
+  17 |     await page.locator('input[autocomplete="username"]').fill("bendahara_test");
+  18 |     await page
+  19 |       .locator('input[autocomplete="current-password"]')
+  20 |       .fill("password_test_bendahara");
+  21 | 
+  22 |     await page.click('button[type="submit"]');
+  23 | 
+> 24 |     await expect(page).toHaveURL(/\/$/);
+     |                        ^ Error: expect(page).toHaveURL(expected) failed
+  25 |     await expect(page.getByRole("button", { name: "Keluar" })).toBeVisible();
+  26 |   });
+  27 | });
+  28 | 
+```

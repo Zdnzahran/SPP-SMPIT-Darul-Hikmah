@@ -1,0 +1,274 @@
+{
+  "document_type": "project_test_automation_context",
+  "version": 1,
+  "language": "id",
+  "project": {
+    "name": "Sistem Rekap SPP SMPIT Darul Hikmah",
+    "purpose": "Aplikasi bendahara untuk mengelola kelas, siswa, jenis dan golongan SPP, tagihan, pembayaran, ringkasan tunggakan, dan cetak laporan sisa tagihan.",
+    "stack": {
+      "frontend": "React 18, React Router, React Query, Vite",
+      "backend": "Node.js 18+, Express 4, JavaScript ES modules",
+      "database": "MySQL atau MariaDB",
+      "currency": "Rupiah, disimpan sebagai bilangan bulat"
+    },
+    "repository_layout": {
+      "backend_logic": "backend/src/",
+      "backend_routes": "backend/src/routes/",
+      "backend_tests": "backend/src/*.test.js",
+      "database_schema": "backend/schema.sql",
+      "frontend_pages": "frontend/src/pages/",
+      "project_documentation": "README.md"
+    }
+  },
+  "test_authoring_instructions": [
+    "Sebelum menulis test, baca implementasi terbaru pada file dan endpoint yang akan diuji. Dokumen ini menjelaskan perilaku yang diharapkan, tetapi kode adalah sumber kebenaran untuk detail kontrak yang tidak disebutkan.",
+    "Jangan mengubah kode aplikasi saat tugas hanya meminta test case atau test automation.",
+    "Gunakan bahasa Indonesia untuk nama/deskripsi test bila sesuai dengan test yang sudah ada.",
+    "Utamakan test unit untuk fungsi murni; tambahkan test integrasi API dan end-to-end hanya dengan database serta akun khusus test yang terisolasi.",
+    "Jangan menggunakan, menghapus, atau memigrasikan database produksi. Hindari kredensial produksi dalam test, log, fixture, dan output.",
+    "Test harus deterministik, bisa dijalankan berulang, membersihkan data yang dibuatnya, dan tidak bergantung pada urutan eksekusi.",
+    "Untuk waktu, bulan berjalan, zona waktu WIB, atau scheduler, gunakan kontrol waktu/fungsi yang dapat diuji atau fixture tanggal tetap; jangan membuat ekspektasi yang bergantung pada tanggal saat test dijalankan.",
+    "Assert perilaku dan bentuk respons yang memang dijanjikan aplikasi. Jangan mengarang status HTTP, field, atau pesan error; periksa implementasi dan middleware error terlebih dahulu.",
+    "Jangan menguji detail implementasi internal jika perilaku publik dapat diuji secara langsung."
+  ],
+  "test_setup": {
+    "existing_backend_runner": "Node.js built-in test runner (node:test) dan node:assert/strict",
+    "backend_test_command": "cd backend && npm test",
+    "existing_backend_test_file": "backend/src/hitung.test.js",
+    "existing_frontend_test_runner": null,
+    "frontend_scripts": [
+      "npm run dev",
+      "npm run build",
+      "npm run preview"
+    ],
+    "database_test_requirement": "Test integrasi yang menyentuh endpoint atau query memerlukan MySQL/MariaDB khusus test dengan konfigurasi terpisah dari database development dan produksi.",
+    "ci_build_command": "cd frontend && npm run build"
+  },
+  "business_rules": {
+    "spp_types": {
+      "values": [
+        "bulanan",
+        "pengembangan",
+        "tahunan"
+      ],
+      "student_selection": "Setiap siswa boleh ditagih satu atau lebih jenis SPP; minimal satu jenis harus dipilih.",
+      "monthly": [
+        "Tagihan bulanan dibuat per bulan dari bulan mulai tagih sampai bulan berjalan, kecuali bulan yang dikonfigurasi untuk dikecualikan.",
+        "Penerbitan terjadwal pada tanggal 1 pukul 00.05 WIB; sinkronisasi juga dapat dipicu saat sistem berjalan/login dan melalui endpoint sinkronisasi.",
+        "Sinkronisasi harus idempotent: menjalankannya berulang tidak membuat tagihan bulanan ganda."
+      ],
+      "development": [
+        "Tagihan pengembangan satu kali untuk siswa yang memilih jenis tersebut.",
+        "Pembayaran boleh dicicil.",
+        "Tidak boleh membayar melebihi sisa tagihan."
+      ],
+      "annual": [
+        "Tagihan terbit satu kali pada awal setiap tahun ajaran sesuai BULAN_MULAI_TAHUN_AJARAN, default Juli.",
+        "Siswa yang mulai ditagih di tengah tahun ajaran dikenai satu tagihan tahunan penuh untuk tahun ajaran tersebut.",
+        "Pembayaran boleh dicicil dan tidak boleh melebihi sisa.",
+        "Pembayaran dialokasikan ke tahun ajaran terlama terlebih dahulu."
+      ]
+    },
+    "payment_and_balances": [
+      "Sisa dan saldo tidak disimpan sebagai nilai turunan; hitung dari total tagihan dan pembayaran aktif.",
+      "Pembayaran bulanan dialokasikan FIFO, dari bulan tagihan terlama ke yang terbaru.",
+      "Pembayaran bulanan di muka diperbolehkan hingga batas konfigurasi BATAS_BAYAR_DI_MUKA_BULAN; default 12 kali biaya bulanan. Nilai kosong berarti tanpa batas.",
+      "Saldo bulanan yang tersisa setelah bayar di muka otomatis menutup tagihan bulanan yang terbit kemudian.",
+      "Jenis pengembangan dan tahunan tidak memiliki saldo lebih bayar.",
+      "Tanggal pembayaran tidak boleh di masa depan; nominal pembayaran harus lebih dari nol.",
+      "Pembayaran yang diubah harus divalidasi terhadap saldo tanpa menghitung pembayaran lama yang sedang diedit.",
+      "Soft delete pembayaran harus membuat ringkasan sisa/saldo dihitung ulang tanpa pembayaran yang dihapus."
+    ],
+    "student_lifecycle": [
+      "Siswa memiliki bulan mulai tagih dan boleh memiliki saldo awal pembayaran per jenis.",
+      "Status lulus menghentikan penerbitan tagihan baru; riwayat, sisa, dan laporan tetap tersedia.",
+      "Mengaktifkan kembali siswa akan menerbitkan tagihan bulanan yang terlewat melalui sinkronisasi idempotent.",
+      "Perubahan kelas dilakukan dengan mengedit siswa.",
+      "Siswa, kelas, SPP, pembayaran, dan tagihan menggunakan soft delete sesuai implementasi; test tidak boleh mengharapkan data terhapus fisik.",
+      "Jenis SPP yang ditambahkan pada siswa menghasilkan tagihan sesuai aturan sinkronisasi; jenis yang dicabut memiliki batasan jika sudah memiliki pembayaran.",
+      "Mengganti golongan bulanan/tahunan memerlukan bulan berlaku; tagihan yang sudah terbit mempertahankan nominal lamanya."
+    ],
+    "reporting": [
+      "Laporan sisa tagihan mendukung filter kelas, siswa, status aktif/lulus/semua, serta hanya menunggak.",
+      "Ekspor XLSX belum tersedia; aplikasi menolak format xlsx dan mengarahkan pengguna ke cetak/simpan PDF."
+    ],
+    "database_invariants": [
+      "Tagihan memiliki unique key untuk siswa, jenis, dan bulan; bulan pengembangan bernilai NULL.",
+      "Nominal biaya SPP dan pembayaran harus positif.",
+      "Tagihan dan pembayaran merujuk siswa; tagihan merujuk golongan SPP.",
+      "Nama kelas aktif unik; nama SPP unik per jenis untuk data aktif."
+    ]
+  },
+  "api_surface": {
+    "authentication": {
+      "base_path": "/api/auth",
+      "routes": [
+        "POST /login",
+        "POST /logout",
+        "GET /me",
+        "POST /ganti-password"
+      ],
+      "notes": "Login terbuka; /me dan ganti-password memerlukan autentikasi. Aplikasi menggunakan cookie JWT httpOnly."
+    },
+    "authenticated_routes": [
+      {
+        "base_path": "/api/kelas",
+        "operations": [
+          "GET /",
+          "POST /",
+          "PUT /:id",
+          "DELETE /:id"
+        ]
+      },
+      {
+        "base_path": "/api/spp",
+        "operations": [
+          "GET /",
+          "POST /",
+          "PUT /:id",
+          "DELETE /:id"
+        ]
+      },
+      {
+        "base_path": "/api/siswa",
+        "operations": [
+          "GET /",
+          "POST /",
+          "GET /:id",
+          "PUT /:id",
+          "PATCH /:id/status",
+          "DELETE /:id"
+        ]
+      },
+      {
+        "base_path": "/api/pembayaran",
+        "operations": [
+          "GET /",
+          "POST /",
+          "PUT /:id",
+          "DELETE /:id"
+        ]
+      },
+      {
+        "base_path": "/api/tagihan",
+        "operations": [
+          "POST /sinkron"
+        ]
+      },
+      {
+        "base_path": "/api/laporan",
+        "operations": [
+          "GET /sisa-tagihan"
+        ]
+      }
+    ],
+    "access_control": "Semua endpoint /api selain route autentikasi yang secara eksplisit terbuka memerlukan login.",
+    "validation": "Backend menggunakan Zod untuk validasi input dan middleware error terpusat. Periksa skema route untuk detail tiap field dan bentuk respons."
+  },
+  "frontend_user_flows": [
+    "Login bendahara dan akses halaman terlindungi.",
+    "Kelola kelas.",
+    "Kelola golongan SPP berdasarkan jenis.",
+    "Tambah/edit siswa, pilih kelas dan jenis SPP, tentukan bulan mulai tagih dan saldo awal.",
+    "Lihat detail siswa, tagihan, pembayaran, saldo, dan sisa.",
+    "Catat, edit, dan hapus pembayaran; ringkasan siswa diperbarui.",
+    "Luluskan atau aktifkan kembali siswa.",
+    "Lihat dashboard dan cetak laporan sisa tagihan dengan filter."
+  ],
+  "test_case_priorities": [
+    {
+      "priority": "P0",
+      "area": "Perhitungan",
+      "cases": [
+        "FIFO bulanan dan tahunan mengalokasikan pembayaran ke tagihan tertua.",
+        "Sisa, saldo, status lunas, dan tunggakan sejak dihitung benar.",
+        "Saldo bulanan otomatis berkurang saat tagihan baru muncul.",
+        "Pengembangan dan tahunan tidak menghasilkan saldo lebih bayar."
+      ]
+    },
+    {
+      "priority": "P0",
+      "area": "Tagihan",
+      "cases": [
+        "Rentang bulan terbit sesuai bulan mulai tagih dan bulan berjalan.",
+        "Awal tahun ajaran dan siswa masuk tengah tahun menghasilkan tagihan tahunan yang benar.",
+        "Bulan yang dikonfigurasi untuk dikecualikan tidak menghasilkan tagihan bulanan.",
+        "Sinkronisasi berulang tidak menggandakan tagihan.",
+        "Siswa lulus tidak memperoleh tagihan baru."
+      ]
+    },
+    {
+      "priority": "P1",
+      "area": "Pembayaran API",
+      "cases": [
+        "Pembayaran valid membuat data dan memperbarui ringkasan.",
+        "Nominal nol/negatif, tanggal masa depan, siswa tidak ditemukan, atau jenis yang tidak ditagihkan ditolak.",
+        "Batas pembayaran di muka dan larangan lebih bayar diterapkan.",
+        "Edit pembayaran memvalidasi nominal baru tanpa menghitung pembayaran lama.",
+        "Soft delete pembayaran memperbarui sisa dan saldo."
+      ]
+    },
+    {
+      "priority": "P1",
+      "area": "Siswa dan konfigurasi",
+      "cases": [
+        "Siswa wajib memilih setidaknya satu jenis SPP dan memiliki referensi kelas/golongan valid.",
+        "Saldo awal dan bulan mulai tagih memengaruhi tagihan/ringkasan sesuai aturan.",
+        "Status lulus menghentikan tagihan; pengaktifan kembali menyinkronkan tagihan terlewat.",
+        "Kelas atau golongan yang masih digunakan tidak dapat dihapus bila aturan aplikasi melarangnya.",
+        "Perubahan biaya golongan tidak mengubah nominal tagihan yang sudah terbit."
+      ]
+    },
+    {
+      "priority": "P2",
+      "area": "Frontend/E2E",
+      "cases": [
+        "Pengguna yang belum login diarahkan ke autentikasi atau tidak dapat membuka fitur terlindungi.",
+        "Alur login, membuat data dasar, tambah siswa, catat pembayaran, dan verifikasi ringkasan berhasil.",
+        "Validasi dan pesan kegagalan API ditampilkan dengan benar.",
+        "Filter laporan dan halaman cetak menampilkan siswa/status yang sesuai."
+      ]
+    }
+  ],
+  "existing_test_coverage": {
+    "file": "backend/src/hitung.test.js",
+    "covered": [
+      "Saldo bulanan dan penggunaan saldo saat tagihan baru terbit.",
+      "Pembayaran di muka setahun.",
+      "Alokasi FIFO bulanan.",
+      "Siswa tanpa tagihan.",
+      "Perhitungan pengembangan.",
+      "Perhitungan tanggal dan pergantian tahun.",
+      "Awal serta rentang tahun ajaran.",
+      "Alokasi FIFO tahunan."
+    ],
+    "not_yet_present": [
+      "Test integrasi endpoint/API.",
+      "Test komponen frontend.",
+      "Test end-to-end browser."
+    ]
+  },
+  "recommended_automation_sequence": [
+    "Audit test yang ada dan tambahkan unit test untuk aturan bisnis yang belum tercakup.",
+    "Jika diperlukan, tambahkan test integrasi backend dengan database test terisolasi serta setup/teardown yang aman.",
+    "Tambahkan test komponen frontend setelah memilih dan mengonfigurasi runner/library yang cocok dengan project.",
+    "Tambahkan beberapa test browser untuk alur kritis bendahara setelah lingkungan backend, frontend, dan database test dapat dijalankan otomatis.",
+    "Konfigurasikan CI untuk menjalankan backend tests dan frontend build; perluas ke test lain setelah stabil."
+  ],
+  "environment_configuration_names": [
+    "DATABASE_URL",
+    "SESSION_SECRET",
+    "SEED_PASSWORD",
+    "BATAS_BAYAR_DI_MUKA_BULAN",
+    "BULAN_MULAI_TAHUN_AJARAN",
+    "BULAN_DIKECUALIKAN",
+    "COOKIE_SECURE"
+  ],
+  "important_constraints": [
+    "Gunakan fixture rupiah bilangan bulat dan tanggal ISO YYYY-MM-DD.",
+    "Bedakan nilai saldo bulanan negatif/sisa sesuai kontrak fungsi hitung dan ringkasan; periksa fungsi yang diuji, jangan menyamakan semua jenis SPP.",
+    "Jangan mengasumsikan tagihan yang dihapus, dibayar, atau terlambat disimpan sebagai saldo/sisa tersendiri; ringkasan diturunkan dari tagihan dan pembayaran aktif.",
+    "Pengujian harus mempertahankan perilaku aplikasi yang ada dan tidak mengubah migration atau seed pada database non-test.",
+    "Jangan menambahkan framework atau dependency sebelum memeriksa kebutuhan, pola project, dan persetujuan bila dampaknya besar."
+  ]
+}
